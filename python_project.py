@@ -1,10 +1,22 @@
 from tkinter import *
 """This program is a food ordering system."""
 
+class Food:
+    """Class that holds the food objects"""
+    def __init__(self, name, cost):
+        self.name = name
+        self.cost = cost #In NZD
+
 class OrderMenu:
     """Main GUI."""
     def __init__(self, parent):
         """Main GUI Framework"""
+        #Start Code
+        self.food_list = [Food("Burger", 10),
+                     Food("Pizza", 18),
+                     Food("Donut", 3),
+                     Food("Ice Cream", 4),
+                     Food("7 Layer Cake", 170)]
         #Frame 1: Start Menu
         self.frame1 = Frame(parent)
         self.ordering_menu_lb = Label(self.frame1, text = "Menu")
@@ -43,7 +55,6 @@ class OrderMenu:
         self.next_btn = Button(self.frame2, text = "Next")
         self.next_btn.grid(row = 8, column = 6 )
         
-        
         #Frame 3: Order enter first frame:
         self.frame3 = Frame(parent)
         
@@ -65,9 +76,16 @@ class OrderMenu:
         #Frame 4: Order enter second frame:
         self.frame4 = Frame(parent)
 
-        self.test_list = ["Burger", "Pizza", "Carrot"]
-        option = StringVar()
-        option.set(self.test_list [0])
+        self.food_name_list = []
+
+        for food in self.food_list:
+            self.food_name_list.append(food.name)
+            print(food)
+            print(food.name)
+            print(self.food_name_list)
+
+        self.option = StringVar()
+        self.option.set(self.food_name_list[0])
 
         self.item_number = IntVar()
         self.item_number.set(1)
@@ -75,12 +93,11 @@ class OrderMenu:
         self.item_number_lb = Label(self.frame4, textvar = self.item_number)
         self.item_number_lb.grid(row = 0, column = 2)
     
-        self.item_drop_down = OptionMenu(self.frame4, option, *self.test_list)
+        self.item_drop_down = OptionMenu(self.frame4, self.option, *self.food_name_list)
         self.item_drop_down.grid(row = 2, column = 2)
 
         self.confirm_btn_2 = Button(self.frame4, text = "Confirm")
         self.confirm_btn_2.grid(row = 4, column = 2)
-        
 
         #Frame 5: : Receipt
         self.frame5 = Frame(parent)
