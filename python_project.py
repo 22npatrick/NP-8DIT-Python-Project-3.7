@@ -1,22 +1,36 @@
-from tkinter import *
 """This program is a food ordering system."""
+from tkinter import *
+from tkinter import messagebox
+
+class Order:
+    """Class that holds the order objects"""
+
+    def __init__(self, orderer_name, order_cost, order_content):
+        """Each order object will have the orderer's name, order's cost and the """
+
+        self.orderer_name = orderer_name
+        self.order_cost = order_cost
+        self.order_content = order_content
 
 class Food:
-    """Class that holds the food objects"""
+    """Class that holds the food objects."""
+
     def __init__(self, name, cost):
+        """Each food object will have a name and cost"""
+
         self.name = name
         self.cost = cost #In NZD
 
 class OrderMenu:
     """Main GUI."""
+
     def __init__(self, parent):
-        """Main GUI Framework"""
+        """Main GUI Framework."""
+
         #Start Code
-        self.food_list = [Food("Burger", 10),
-                     Food("Pizza", 18),
-                     Food("Donut", 3),
-                     Food("Ice Cream", 4),
-                     Food("7 Layer Cake", 170)]
+        self.food_list = [Food("Burger", 10), Food("Pizza", 18), Food("Donut", 3), Food("Ice Cream", 4), Food("7 Layer Cake", 170)]
+        self.order_list = []
+
         #Frame 1: Start Menu
         self.frame1 = Frame(parent)
         self.ordering_menu_lb = Label(self.frame1, text = "Menu")
@@ -58,19 +72,19 @@ class OrderMenu:
         #Frame 3: Order enter first frame:
         self.frame3 = Frame(parent)
         
-        self.input_order_name_lb = Label(self.frame3, text = "Order Name: ")
-        self.input_order_name_lb .grid(row = 0, column = 0)
+        self.input_orderer_name_lb = Label(self.frame3, text = "Orderer Name: ")
+        self.input_orderer_name_lb .grid(row = 0, column = 0)
 
-        self.input_order_name_en = Entry(self.frame3)
-        self.input_order_name_en .grid(row = 0, column = 2)
+        self.input_orderer_name_en = Entry(self.frame3)
+        self.input_orderer_name_en .grid(row = 0, column = 2)
 
         self.input_order_amount_lb = Label(self.frame3, text = "Amount of items: ")
         self.input_order_amount_lb.grid(row = 2, column = 0)
 
-        self.input_order_name_en = Entry(self.frame3)
-        self.input_order_name_en.grid(row = 2, column = 2)
+        self.input_order_amount_en = Entry(self.frame3)
+        self.input_order_amount_en.grid(row = 2, column = 2)
 
-        self.confirm_btn_1 = Button(self.frame3, text = "Confirm" , command=lambda: self.switch_frames(3, 4))
+        self.confirm_btn_1 = Button(self.frame3, text = "Confirm" , command = self.confirm_1)
         self.confirm_btn_1.grid(row = 4, column = 0)
 
         #Frame 4: Order enter second frame:
@@ -80,9 +94,6 @@ class OrderMenu:
 
         for food in self.food_list:
             self.food_name_list.append(food.name)
-            print(food)
-            print(food.name)
-            print(self.food_name_list)
 
         self.option = StringVar()
         self.option.set(self.food_name_list[0])
@@ -102,19 +113,19 @@ class OrderMenu:
         #Frame 5: : Receipt
         self.frame5 = Frame(parent)
 
-        order_name = StringVar()
-        order_name.set("FNA")
-        self.order_name_lb = Label(self.frame5, textvar = order_name)
+        self.order_name = StringVar()
+        self.order_name.set("FNA")
+        self.order_name_lb = Label(self.frame5, textvar = self.order_name)
         self.order_name_lb.grid(row = 0, column = 4)
 
-        order_content = StringVar()  #Figure out how to store the order content
-        order_content.set("FNC")
-        self.order_content_lb = Label(self.frame5, textvar = order_content)
+        self.order_content = StringVar()  #Figure out how to store the order content
+        self.order_content.set("FNC")
+        self.order_content_lb = Label(self.frame5, textvar = self.order_content)
         self.order_content_lb.grid(row = 2, column = 4)
 
-        order_cost = StringVar()  #Figure out how to store the order content
-        order_cost.set("FNA")
-        self.order_cost_lb = Label(self.frame5, textvar = order_cost)
+        self.order_cost = StringVar()  #Figure out how to store the order content
+        self.order_cost.set("FNA")
+        self.order_cost_lb = Label(self.frame5, textvar = self.order_cost)
         self.order_cost_lb.grid(row = 4, column = 4)
 
         self.order_menu_btn_2 = Button(self.frame5, text = "Order Menu", command=lambda: self.switch_frames(5, 1))
@@ -126,15 +137,47 @@ class OrderMenu:
 
     def switch_frames(self, start_frame, end_frame):
         """When method is run it would switch to the frame given by the argument 
-        and remove the previous frame"""
+        and remove the previous frame."""
+
         for frame in self.frame_list:
             if start_frame == (self.frame_list.index(frame) + 1):
                 frame.grid_forget()
             elif end_frame == (self.frame_list.index(frame) + 1):
                 frame.grid()
+    
+    def confirm_1(self):
+        """Checks if what the user in frame 3 entered is valid and contniues onto """
+        try:
+            if len(self.input_orderer_name_en.get()) == 0:
+                messagebox.showerror("ErroR", "Must input name")
+                self.input_orderer_name_en.focus()
+            elif len(self.input_order_amount_en.get()) == 0:
+                messagebox.showerror("ErroR", "Must input amount of items")
+                self.input_order_amount_en.focus()
+            elif int(self.input_order_amount_en.get()) <= 0:
+                messagebox.showerror("ErroR", "Amount must be a positive interger")
+                self.input_order_amount_en.delete(0, END)
+                self.input_order_amount_en.focus()
+            elif int(self.input_order_amount_en.get()) > 5:
+                messagebox.showerror("ErroR", "Amount must be less than or equal to 5")
+                self.input_order_amount_en.delete(0, END)
+                self.input_order_amount_en.focus()
+            else:
+                order = Order(self.input_orderer_name_en.get(), self.input_order_amount_en.get(), None)
+                print(order.orderer_name)
+                print(order.order_cost)
+                print(order.order_content)
+                self.order_list.append(order)
+                print(self.order_list[0].orderer_name)
+                print(self.order_list[0].order_cost)
+                print(self.order_list[0].order_content)
+                self.switch_frames(3, 4)
+        except:
+             messagebox.showerror("ErroR", "Amount must be a positive interger")
+             self.input_order_amount_en.delete(0, END)
+             self.input_order_amount_en.focus()
 
         
-
 if __name__=="__main__":
     root = Tk()
     order_menu = OrderMenu(root)
