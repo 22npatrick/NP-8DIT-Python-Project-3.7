@@ -5,12 +5,13 @@ from tkinter import messagebox
 class Order:
     """Class that holds the order objects"""
 
-    def __init__(self, orderer_name, order_cost, order_content):
+    def __init__(self, orderer_name, order_amount, order_content, order_cost):
         """Each order object will have the orderer's name, order's cost and the """
 
         self.orderer_name = orderer_name
-        self.order_cost = order_cost
+        self.order_amount = order_amount
         self.order_content = order_content
+        self.order_cost = order_cost
 
 class Food:
     """Class that holds the food objects."""
@@ -84,7 +85,7 @@ class OrderMenu:
         self.input_order_amount_en = Entry(self.frame3)
         self.input_order_amount_en.grid(row = 2, column = 2)
 
-        self.confirm_btn_1 = Button(self.frame3, text = "Confirm" , command = self.confirm_1)
+        self.confirm_btn_1 = Button(self.frame3, text = "Confirm", command = self.confirm_1)
         self.confirm_btn_1.grid(row = 4, column = 0)
 
         #Frame 4: Order enter second frame:
@@ -107,7 +108,7 @@ class OrderMenu:
         self.item_drop_down = OptionMenu(self.frame4, self.option, *self.food_name_list)
         self.item_drop_down.grid(row = 2, column = 2)
 
-        self.confirm_btn_2 = Button(self.frame4, text = "Confirm")
+        self.confirm_btn_2 = Button(self.frame4, text = "Confirm",  command = self.confirm_2)
         self.confirm_btn_2.grid(row = 4, column = 2)
 
         #Frame 5: : Receipt
@@ -144,7 +145,14 @@ class OrderMenu:
                 frame.grid_forget()
             elif end_frame == (self.frame_list.index(frame) + 1):
                 frame.grid()
-    
+    def test(self, index):
+        #Remove this function later
+        print(self.order_list[index].orderer_name)
+        print(self.order_list[index].order_amount)
+        print(self.order_list[index].order_content)
+        print(self.order_list[index].order_cost)
+        
+
     def confirm_1(self):
         """Checks if what the user in frame 3 entered is valid and contniues onto """
         try:
@@ -163,19 +171,32 @@ class OrderMenu:
                 self.input_order_amount_en.delete(0, END)
                 self.input_order_amount_en.focus()
             else:
-                order = Order(self.input_orderer_name_en.get(), self.input_order_amount_en.get(), None)
+                order = Order(self.input_orderer_name_en.get(), self.input_order_amount_en.get(), None, None)
                 print(order.orderer_name)
+                print(order.order_amount)
                 print(order.order_cost)
                 print(order.order_content)
                 self.order_list.append(order)
-                print(self.order_list[0].orderer_name)
-                print(self.order_list[0].order_cost)
-                print(self.order_list[0].order_content)
+                self.test(-1) #Delete later
                 self.switch_frames(3, 4)
+                self.item_number.set(self.order_list[-1].order_amount)
+                self.content_list = []
         except:
              messagebox.showerror("ErroR", "Amount must be a positive interger")
              self.input_order_amount_en.delete(0, END)
              self.input_order_amount_en.focus()
+    
+    def confirm_2(self):
+        """"Allows the user to add the amount of items they wanted"""
+        print(self.item_number.get())
+        for food in self.food_list:
+            if food.name == self.option.get():
+                print(f"{self.option.get()}")
+        self.item_number.set(self.item_number.get()-1) 
+        if self.item_number.get() < 1:
+            self.test(-1) #Delete later
+            self.switch_frames(4, 5)
+
 
         
 if __name__=="__main__":
