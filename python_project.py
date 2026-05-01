@@ -149,7 +149,7 @@ class OrderMenu:
             elif end_frame == (self.frame_list.index(frame) + 1):
                 frame.grid()
 
-                
+
     def test(self, index):
         #Remove this function later
         print(self.order_list[index].orderer_name)
@@ -207,8 +207,18 @@ class OrderMenu:
             self.order_list[-1].order_content = self.content_list
             print("")
             self.test(-1) #Delete later
+            self.cost_calc()
             self.switch_frames(4, 5)
 
+    def cost_calc(self):
+        self.total_cost = 0
+        for food in self.order_list[-1].order_content:
+            print(food.name)
+            self.total_cost += food.cost
+        self.order_list[-1].order_cost = self.total_cost
+        self.total_cost = 0
+        self.test(-1)
+        
         
 if __name__=="__main__":
     root = Tk()
