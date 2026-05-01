@@ -102,6 +102,9 @@ class OrderMenu:
         self.item_number = IntVar()
         self.item_number.set(1)
 
+        self.item_number_tx_lb = Label(self.frame4, text = "Amount of items left to confirm")
+        self.item_number_tx_lb.grid(row = 0, column = 0)
+
         self.item_number_lb = Label(self.frame4, textvar = self.item_number)
         self.item_number_lb.grid(row = 0, column = 2)
     
@@ -145,11 +148,17 @@ class OrderMenu:
                 frame.grid_forget()
             elif end_frame == (self.frame_list.index(frame) + 1):
                 frame.grid()
+
+                
     def test(self, index):
         #Remove this function later
         print(self.order_list[index].orderer_name)
         print(self.order_list[index].order_amount)
-        print(self.order_list[index].order_content)
+        if self.order_list[index].order_content == None:
+           print(self.order_list[index].order_content)
+        else:
+            for food in self.order_list[index].order_content:
+                print(food.name)
         print(self.order_list[index].order_cost)
         
 
@@ -187,16 +196,18 @@ class OrderMenu:
              self.input_order_amount_en.focus()
     
     def confirm_2(self):
-        """"Allows the user to add the amount of items they wanted"""
+        """Allows the user to add the amount of items they wanted"""
         print(self.item_number.get())
         for food in self.food_list:
             if food.name == self.option.get():
-                print(f"{self.option.get()}")
+                print(f"{food.name}")
+                self.content_list.append(food)
         self.item_number.set(self.item_number.get()-1) 
         if self.item_number.get() < 1:
+            self.order_list[-1].order_content = self.content_list
+            print("")
             self.test(-1) #Delete later
             self.switch_frames(4, 5)
-
 
         
 if __name__=="__main__":
