@@ -41,7 +41,7 @@ class OrderMenu:
         self.order_btn = Button(self.frame1, text = "Order", command=lambda: self.switch_frames(1, 3))
         self.order_btn.grid(row = 4, column = 2 )
         
-        self.history_btn = Button(self.frame1, text = "History", command=lambda: self.switch_frames(1, 2))
+        self.history_btn = Button(self.frame1, text = "History", command = self.history_setup)
         self.history_btn.grid(row = 4, column = 6 )
 
         #Frame 2: Order History
@@ -49,20 +49,23 @@ class OrderMenu:
 
         self.order_menu_btn_1 = Button(self.frame2, text = "Order Menu", command=lambda: self.switch_frames(2, 1))
         self.order_menu_btn_1.grid(row = 0, column = 6 )
+
+        self.orderer_name = StringVar()
+        self.orderer_name.set("FNA")
+
+        self.past_orderer_name_lb = Label(self.frame2, textvar = self.orderer_name)
+        self.past_orderer_name_lb.grid(row = 2, column = 4)
+
+        self.content_message_var = StringVar()
+        self.content_message_var.set("Empty")
         
-        past_order_name = StringVar()
-        past_order_name.set("NA")
-        self.past_order_name_lb = Label(self.frame2, textvar = past_order_name)
-        self.past_order_name_lb.grid(row = 2, column = 4)
+        self.past_content_message = Message(self.frame2, textvar = self.content_message_var)
+        self.past_content_message .grid(row = 3, column = 4, columnspan = 2)
 
-        past_order_content = StringVar()  #Figure out how to store the order content
-        past_order_content.set("NC")
-        self.past_order_content_lb = Label(self.frame2, textvar = past_order_content)
-        self.past_order_content_lb.grid(row = 4, column = 4)
+        self.order_cost = StringVar()  #Figure out how to store the order content
+        self.order_cost.set("FNA")
 
-        past_order_cost = StringVar() 
-        past_order_cost.set("NA")
-        self.past_order_cost_lb = Label(self.frame2, textvar = past_order_cost)
+        self.past_order_cost_lb = Label(self.frame2, textvar =  self.order_cost)
         self.past_order_cost_lb.grid(row = 6, column = 4)
 
         self.prev_btn = Button(self.frame2, text = "Previous")
@@ -118,24 +121,13 @@ class OrderMenu:
         #Frame 5: : Receipt
         self.frame5 = Frame(parent)
 
-        self.order_name = StringVar()
-        self.order_name.set("FNA")
-        self.order_name_lb = Label(self.frame5, textvar = self.order_name)
-        self.order_name_lb.grid(row = 0, column = 4)
+        self.orderer_name_lb = Label(self.frame5, textvar = self.orderer_name)
+        self.orderer_name_lb.grid(row = 0, column = 4)
 
-        self.order_content = StringVar()  #Figure out how to store the order content
-        self.order_content.set("FNC")
-        self.order_content_lb = Label(self.frame5, textvar = self.order_content)
-        self.order_content_lb.grid(row = 2, column = 4)
-
-        self.content_message_var = StringVar()
-        self.content_message_var.set("Empty")
         print(self.content_message_var.get())
         self.content_message = Message(self.frame5, textvar = self.content_message_var)
         self.content_message.grid(row = 3, column = 4, columnspan = 2)
 
-        self.order_cost = StringVar()  #Figure out how to store the order content
-        self.order_cost.set("FNA")
         self.order_cost_lb = Label(self.frame5, textvar = self.order_cost)
         self.order_cost_lb.grid(row = 4, column = 4)
 
@@ -216,7 +208,7 @@ class OrderMenu:
             print("")
             self.test(-1) #Delete later
             self.cost_calc()
-            self.final_result()
+            self.final_result(-1)
             self.switch_frames(4, 5)
 
     def cost_calc(self):
@@ -228,19 +220,24 @@ class OrderMenu:
         self.total_cost = 0
         self.test(-1)
     
-    def final_result(self):
+    def final_result(self, index):
         #        self.orderer_name = orderer_name
         #       self.order_amount = order_amount
         #        self.order_content = order_content
         #        self.order_cost = order_cost
-        self.order_name.set(self.order_list[-1].orderer_name)
-        self.order_content.set(self.order_list[-1].order_amount)
-        self.order_cost.set(self.order_list[-1].order_cost)
+        self.orderer_name.set(self.order_list[index].orderer_name)
+        self.order_cost.set(self.order_list[index].order_cost)
         formating = ""
-        for order in self.order_list[-1].order_content:
+        for order in self.order_list[index].order_content:
             formating += order.name
             formating += "\n"
         self.content_message_var.set(formating)
+
+    def history_setup(self):
+        self.final_result(0)
+        self.switch_frames(1, 2)
+
+
         
         
 if __name__=="__main__":
