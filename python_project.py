@@ -44,6 +44,7 @@ class OrderMenu:
         
         self.history_btn = Button(self.frame1, text = "History", command = self.history_setup)
         self.history_btn.grid(row = 4, column = 6 )
+        self.history_btn.configure(state = "disabled")
 
         #Frame 2: Order History
         self.frame2 = Frame(parent)
@@ -52,19 +53,28 @@ class OrderMenu:
         self.order_menu_btn_1.grid(row = 0, column = 6 )
 
         self.orderer_name = StringVar()
-        self.orderer_name.set("FNA")
+        self.orderer_name.set("Empty1")
+
+        self.past_orderer_name_tx_lb = Label(self.frame2, text = "Orderer's name")
+        self.past_orderer_name_tx_lb.grid(row = 2, column = 0)
 
         self.past_orderer_name_lb = Label(self.frame2, textvar = self.orderer_name)
         self.past_orderer_name_lb.grid(row = 2, column = 4)
 
         self.content_message_var = StringVar()
-        self.content_message_var.set("Empty")
+        self.content_message_var.set("Empty2")
+
+        self.past_content_message_tx_lb =  Label(self.frame2, text = "Orderer's content")
+        self.past_content_message_tx_lb.grid(row = 4, column = 0)
         
         self.past_content_message = Message(self.frame2, textvar = self.content_message_var, width= WIDTH)
-        self.past_content_message .grid(row = 3, column = 4, columnspan = 2)
+        self.past_content_message .grid(row = 4, column = 4, columnspan = 2)
 
         self.order_cost = StringVar()  #Figure out how to store the order content
-        self.order_cost.set("FNA")
+        self.order_cost.set("Empty3")
+        
+        self.past_order_cost_tx_lb =  Label(self.frame2, text = "Total order cost (in NZD)")
+        self.past_order_cost_tx_lb.grid(row = 6, column = 0)
 
         self.past_order_cost_lb = Label(self.frame2, textvar =  self.order_cost)
         self.past_order_cost_lb.grid(row = 6, column = 4)
@@ -74,6 +84,9 @@ class OrderMenu:
 
         self.next_btn = Button(self.frame2, text = "Next", command = self.next)
         self.next_btn.grid(row = 8, column = 6 )
+
+
+
         
         #Frame 3: Order enter first frame:
         self.frame3 = Frame(parent)
@@ -122,12 +135,25 @@ class OrderMenu:
         #Frame 5: : Receipt
         self.frame5 = Frame(parent)
 
+        self.orderer_name_tx_lb = Label(self.frame5, text = "Orderer's name")
+        self.orderer_name_tx_lb.grid(row = 0, column = 0)
+
         self.orderer_name_lb = Label(self.frame5, textvar = self.orderer_name)
         self.orderer_name_lb.grid(row = 0, column = 4)
 
         print(self.content_message_var.get())
+
+        self.content_message_tx_lb =  Label(self.frame5, text = "Orderer's content")
+        self.content_message_tx_lb.grid(row = 2, column = 0)
+
+
         self.content_message = Message(self.frame5, textvar = self.content_message_var, width = WIDTH)
-        self.content_message.grid(row = 3, column = 4, columnspan = 2)
+        self.content_message.grid(row = 2, column = 4, columnspan = 2)
+
+
+        self.order_cost_tx_lb =  Label(self.frame5, text = "Total order cost (in NZD)")
+        self.order_cost_tx_lb.grid(row = 4, column = 0)
+
 
         self.order_cost_lb = Label(self.frame5, textvar = self.order_cost)
         self.order_cost_lb.grid(row = 4, column = 4)
@@ -138,6 +164,7 @@ class OrderMenu:
         #Set Up Code
         self.frame_list = [self.frame1, self.frame2, self.frame3, self.frame4, self.frame5]
         self.frame5.grid()
+        
 
     def switch_frames(self, start_frame, end_frame):
         """When method is run it would switch to the frame given by the argument 
@@ -254,7 +281,7 @@ class OrderMenu:
                 formating += "\n"
             order_num += 1
         self.content_message_var.set(formating)
-
+        self.history_btn.configure(state = "active")
         # for order in self.order_list[index].order_content:
         #     formating += order.name
         #     if order_num < len(self.order_list[index].order_content):
