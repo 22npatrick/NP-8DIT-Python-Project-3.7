@@ -32,6 +32,7 @@ class OrderMenu:
         #Start Code
         self.food_list = [Food("Burger", 10), Food("Pizza", 18), Food("Donut", 3), Food("Ice Cream", 4), Food("7 Layer Cake", 170)]
         self.order_list = []
+        WIDTH = 150
 
         #Frame 1: Start Menu
         self.frame1 = Frame(parent)
@@ -59,7 +60,7 @@ class OrderMenu:
         self.content_message_var = StringVar()
         self.content_message_var.set("Empty")
         
-        self.past_content_message = Message(self.frame2, textvar = self.content_message_var)
+        self.past_content_message = Message(self.frame2, textvar = self.content_message_var, width= WIDTH)
         self.past_content_message .grid(row = 3, column = 4, columnspan = 2)
 
         self.order_cost = StringVar()  #Figure out how to store the order content
@@ -125,7 +126,7 @@ class OrderMenu:
         self.orderer_name_lb.grid(row = 0, column = 4)
 
         print(self.content_message_var.get())
-        self.content_message = Message(self.frame5, textvar = self.content_message_var)
+        self.content_message = Message(self.frame5, textvar = self.content_message_var, width = WIDTH)
         self.content_message.grid(row = 3, column = 4, columnspan = 2)
 
         self.order_cost_lb = Label(self.frame5, textvar = self.order_cost)
@@ -163,7 +164,7 @@ class OrderMenu:
 
     def confirm_1(self):
         """Checks if what the user in frame 3 entered is valid and contniues onto """
-        self.input_order_amount_en.focus()
+        self.input_orderer_name_en.focus()
         try:
             if len(self.input_orderer_name_en.get()) == 0:
                 messagebox.showerror("ErroR", "Must input name")
@@ -189,6 +190,8 @@ class OrderMenu:
                 self.test(-1) #Delete later
                 self.switch_frames(3, 4)
                 self.item_number.set(self.order_list[-1].order_amount)
+                self.input_orderer_name_en.delete(0, END)
+                self.input_order_amount_en.delete(0, END)
                 self.content_list = []
         except:
              messagebox.showerror("ErroR", "Amount must be a positive interger")
@@ -209,7 +212,9 @@ class OrderMenu:
             self.test(-1) #Delete later
             self.cost_calc()
             self.final_result(-1)
+            self.option.set(self.food_name_list[0])
             self.switch_frames(4, 5)
+            
 
     def cost_calc(self):
         self.total_cost = 0
@@ -225,12 +230,37 @@ class OrderMenu:
         self.order_cost.set(self.order_list[index].order_cost)
         formating = ""
         order_num = 1
-        for order in self.order_list[index].order_content:
-            formating += order.name
-            if order_num < len(self.order_list[index].order_content):
+        self.name_order_list = []
+        true_list = []
+
+        for order_content in self.order_list[index].order_content:
+            self.name_order_list.append(order_content.name)
+
+        for order in self.name_order_list:
+            if self.name_order_list.count(order) > 1:
+                true_list.append(f"{order} x {self.name_order_list.count(order)}")
+                for i in range(self.name_order_list.count(order)-1):
+                    self.name_order_list.remove(order)
+                    print(self.name_order_list)
+            else:
+                true_list.append(f"{order} x {1}")
+    
+        for order in true_list:
+            print(order)
+        
+        for order in true_list:
+            formating += order
+            if order_num < len(true_list):
                 formating += "\n"
             order_num += 1
         self.content_message_var.set(formating)
+
+        # for order in self.order_list[index].order_content:
+        #     formating += order.name
+        #     if order_num < len(self.order_list[index].order_content):
+        #         formating += "\n"
+        #     order_num += 1
+        # self.content_message_var.set(formating)
 
     def history_setup(self):
         self.prev_btn.configure(state = "disabled")
