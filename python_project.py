@@ -1,6 +1,7 @@
 """This program is a food ordering system."""
 from tkinter import *
 from tkinter import messagebox
+from tkinter import scrolledtext
 
 class Order:
     """Class that holds the order objects"""
@@ -107,7 +108,7 @@ class OrderMenu:
 
         self.item_number_lb = Label(self.frame4, textvar = self.item_number)
         self.item_number_lb.grid(row = 0, column = 2)
-    
+
         self.item_drop_down = OptionMenu(self.frame4, self.option, *self.food_name_list)
         self.item_drop_down.grid(row = 2, column = 2)
 
@@ -127,13 +128,19 @@ class OrderMenu:
         self.order_content_lb = Label(self.frame5, textvar = self.order_content)
         self.order_content_lb.grid(row = 2, column = 4)
 
+        self.content_message_var = StringVar()
+        self.content_message_var.set("Empty")
+        print(self.content_message_var.get())
+        self.content_message = Message(self.frame5, textvar = self.content_message_var)
+        self.content_message.grid(row = 3, column = 4, columnspan = 2)
+
         self.order_cost = StringVar()  #Figure out how to store the order content
         self.order_cost.set("FNA")
         self.order_cost_lb = Label(self.frame5, textvar = self.order_cost)
         self.order_cost_lb.grid(row = 4, column = 4)
 
         self.order_menu_btn_2 = Button(self.frame5, text = "Order Menu", command=lambda: self.switch_frames(5, 1))
-        self.order_menu_btn_2.grid(row = 6, column = 6 )
+        self.order_menu_btn_2.grid(row = 6, column = 6)
 
         #Set Up Code
         self.frame_list = [self.frame1, self.frame2, self.frame3, self.frame4, self.frame5]
@@ -164,6 +171,7 @@ class OrderMenu:
 
     def confirm_1(self):
         """Checks if what the user in frame 3 entered is valid and contniues onto """
+        self.input_order_amount_en.focus()
         try:
             if len(self.input_orderer_name_en.get()) == 0:
                 messagebox.showerror("ErroR", "Must input name")
@@ -208,6 +216,7 @@ class OrderMenu:
             print("")
             self.test(-1) #Delete later
             self.cost_calc()
+            self.final_result()
             self.switch_frames(4, 5)
 
     def cost_calc(self):
@@ -218,6 +227,20 @@ class OrderMenu:
         self.order_list[-1].order_cost = self.total_cost
         self.total_cost = 0
         self.test(-1)
+    
+    def final_result(self):
+        #        self.orderer_name = orderer_name
+        #       self.order_amount = order_amount
+        #        self.order_content = order_content
+        #        self.order_cost = order_cost
+        self.order_name.set(self.order_list[-1].orderer_name)
+        self.order_content.set(self.order_list[-1].order_amount)
+        self.order_cost.set(self.order_list[-1].order_cost)
+        formating = ""
+        for order in self.order_list[-1].order_content:
+            formating += order.name
+            formating += "\n"
+        self.content_message_var.set(formating)
         
         
 if __name__=="__main__":
