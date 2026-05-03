@@ -68,10 +68,10 @@ class OrderMenu:
         self.past_order_cost_lb = Label(self.frame2, textvar =  self.order_cost)
         self.past_order_cost_lb.grid(row = 6, column = 4)
 
-        self.prev_btn = Button(self.frame2, text = "Previous")
+        self.prev_btn = Button(self.frame2, text = "Previous", command = self.prev)
         self.prev_btn.grid(row = 8, column = 2)
 
-        self.next_btn = Button(self.frame2, text = "Next")
+        self.next_btn = Button(self.frame2, text = "Next", command = self.next)
         self.next_btn.grid(row = 8, column = 6 )
         
         #Frame 3: Order enter first frame:
@@ -221,24 +221,47 @@ class OrderMenu:
         self.test(-1)
     
     def final_result(self, index):
-        #        self.orderer_name = orderer_name
-        #       self.order_amount = order_amount
-        #        self.order_content = order_content
-        #        self.order_cost = order_cost
         self.orderer_name.set(self.order_list[index].orderer_name)
         self.order_cost.set(self.order_list[index].order_cost)
         formating = ""
+        order_num = 1
         for order in self.order_list[index].order_content:
             formating += order.name
-            formating += "\n"
+            if order_num < len(self.order_list[index].order_content):
+                formating += "\n"
+            order_num += 1
         self.content_message_var.set(formating)
 
     def history_setup(self):
+        self.prev_btn.configure(state = "disabled")
         self.final_result(0)
         self.switch_frames(1, 2)
-
-
+        self.history_page_num = 1
+        if len(self.order_list) == 1:
+            self.next_btn.configure(state = "disabled")
+        else:
+            self.next_btn.configure(state = "active") 
         
+
+    def next(self):
+        self.history_page_num += 1
+        if self.history_page_num == len(self.order_list):
+            self.next_btn.configure(state = "disabled")
+        else:
+            self.next_btn.configure(state = "active") 
+        self.prev_btn.configure(state = "active") 
+        self.final_result(self.history_page_num-1)
+
+
+    def prev(self):
+        self.history_page_num -= 1
+        if self.history_page_num == 1:
+            self.prev_btn.configure(state = "disabled")
+        else:
+            self.prev_btn.configure(state = "active") 
+        self.next_btn.configure(state = "active") 
+        self.final_result(self.history_page_num-1)
+
         
 if __name__=="__main__":
     root = Tk()
