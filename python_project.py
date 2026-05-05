@@ -1,9 +1,11 @@
-"""This is a food ordering system."""
+"""This is a food ordering system. This program is used to input a customers order for the program to calculate the orders total cost. It is also used to store the detail of all previously entered orders."""
+
 from tkinter import *
 from tkinter import messagebox
 
+
 class Order:
-    """Class that holds the order objects."""
+    """Class that is used to create order objects."""
 
     def __init__(self, orderer_name, order_amount, order_content, order_cost):
         """Each order object will have the orderer's name, the amount of items ordered, the order's content and the order's cost."""
@@ -14,7 +16,7 @@ class Order:
 
 
 class Food:
-    """Class that holds the food objects."""
+    """Class that is used to create food objects."""
 
     def __init__(self, name, cost):
         """Each food object will have a name and cost."""
@@ -36,7 +38,7 @@ class OrderMenu:
         self.ordering_menu_lb = Label(self.frame_1, text="Menu")
         self.ordering_menu_lb.grid(row=0, column=4)
 
-        self.description_lb = Label(self.frame_1, text="This is a food ordering system.\n This program is used to input a customers order for the program to calculate the orders total cost.\n It is allow used to store the detail of all previously entered orders.")
+        self.description_lb = Label(self.frame_1, text="This is a food ordering system.\n Only a maximum of 5 total items can be ordered in one order.\n Currently 5 differnt food items are available")
         self.description_lb.grid(row=2, column=4, sticky=N)
 
         self.order_btn = Button(self.frame_1, text="Order", command=lambda: self.switch_frames(1, 3))
@@ -159,10 +161,10 @@ class OrderMenu:
 
         # Set Up Code
         self.frame_list = [self.frame_1, self.frame_2, self.frame_3, self.frame_4, self.frame_5]
-        self.frame_5.grid()
+        self.frame_1.grid()
 
     def switch_frames(self, start_frame, end_frame):
-        """When method is run it would switch to the frame given by the start_frame argument and remove the frame given by the end frame argument."""
+        """When method is run it would switch to the frame given by the start_frame argument and leave behind the frame given by the end frame argument."""
         for frame in self.frame_list:
             if start_frame == (self.frame_list.index(frame) + 1):
                 frame.grid_forget()
@@ -174,38 +176,37 @@ class OrderMenu:
         self.input_orderer_name_en.focus()
         try:
             # Checks if valid input is entered
-            if len(self.input_orderer_name_en.get()) == 0: # Check for if nothing is entered into the orderer name entry
+            if len(self.input_orderer_name_en.get()) == 0:  # Check for if nothing is entered into the orderer name entry
                 messagebox.showerror("ErroR", "Must input name")
                 self.input_orderer_name_en.focus()
-            elif len(self.input_order_amount_en.get()) == 0: # Check for if nothing is entered into the order amount entry
+            elif len(self.input_order_amount_en.get()) == 0:  # Check for if nothing is entered into the order amount entry
                 messagebox.showerror("ErroR", "Must input amount of items")
                 self.input_order_amount_en.focus()
-            elif int(self.input_order_amount_en.get()) <= 0: # Check for if amount entered is not a positive interger (is a negative number or is zero)
-                messagebox.showerror("ErroR", "Amount must be a positive interger")
+            elif int(self.input_order_amount_en.get()) <= 0:  # Check for if amount entered is not a positive interger (is a negative number or is zero)
+                messagebox.showerror("ErroR", "Amount must be a positive integer")
                 self.input_order_amount_en.delete(0, END)
                 self.input_order_amount_en.focus()
-            elif int(self.input_order_amount_en.get()) > 5: # Check for if amount is greater than 5
+            elif int(self.input_order_amount_en.get()) > 5:  # Check for if amount is greater than 5
                 messagebox.showerror("ErroR", "Amount must be less than or equal to 5")
                 self.input_order_amount_en.delete(0, END)
                 self.input_order_amount_en.focus()
             else:
-                #Creates the order object with orderer_name and order_amount = to what the user has inputted while order_content and order_cost are set to None
+                # Creates the order object with orderer_name and order_amount = to what the user has inputted while order_content and order_cost are set to None
                 order = Order(self.input_orderer_name_en.get(), self.input_order_amount_en.get(), None, None)
                 self.order_list.append(order)
                 self.switch_frames(3, 4)
                 self.amount_num.set(self.order_list[-1].order_amount)
-                #Clears what is currently inside both entry widgets
+                # Clears what is currently inside both entry widgets
                 self.input_orderer_name_en.delete(0, END)
                 self.input_order_amount_en.delete(0, END)
                 self.content_list = []
         except ValueError:
-            messagebox.showerror("ErroR", "Write an interger not a string")
+            messagebox.showerror("ErroR", "Write an integer not a string")  # Check if what the user had type is not an integer
             self.input_order_amount_en.delete(0, END)
             self.input_order_amount_en.focus()
 
     def confirm_2(self):
         """Will add confirmed items from option menu into order list and will set up the order infomation page."""
-        # self.frame_4.grid_forget()
         # Goes through the food object list and if the objects name matches what is currently selected in the OptionMenu will add that object into the content_list
         for food in self.food_list:
             if food.name == self.option.get():
@@ -219,9 +220,8 @@ class OrderMenu:
             self.option.set(self.food_name_list[0])
             self.switch_frames(4, 5)
 
-
     def cost_calc(self):
-        """Calculate the total cost of the order by summing each foods cost and sets the latest order oject's order_cost to be the calculated cost"""
+        """Calculate the total cost of the order by summing each foods cost and sets the latest order oject's order_cost to be the calculated cost."""
         self.total_cost = 0
         for food in self.order_list[-1].order_content:
             self.total_cost += food.cost
@@ -229,7 +229,7 @@ class OrderMenu:
         self.total_cost = 0
 
     def final_result(self, index):
-        """Using the index argument prepares the presentation of the order objects information"""
+        """Use the index argument to prepare the presentation of the order objects information."""
         # Sets orderer_name_var and order_cost_var (which are both StringVar) to orderer_name and order_cost of the current order object dependent of the index argument
         self.orderer_name_var.set(self.order_list[index].orderer_name)
         self.order_cost_var.set(self.order_list[index].order_cost)
@@ -240,14 +240,13 @@ class OrderMenu:
         # Adds the name of each food object from order_list[index].order_content (which is a list of food objects) to the name_order_content_list
         for order_content in self.order_list[index].order_content:
             self.name_order_content_list.append(order_content.name)
-        # Checks if there are multiple of the same food in name_order_content_list and if so adds string with food name and 
+        # Checks if there are multiple of the same food in name_order_content_list and if so adds string with food name and
         # the amount of the food into the final list. After this it removes the remaing same duplicates of the food name from the list
         # Else just adds a string with food name and amount of the food (which is always 1) into the final list.
         for food in self.name_order_content_list:
             self.food_count = self.name_order_content_list.count(food)
             if self.food_count > 1:
                 self.final_content_list.append(f"{food} x {self.food_count}")
-                # For i in range(self.food_count-1):
                 while self.food_count > 1:
                     # Removes the last food item in the list as .remove(food) only removes the first occurence
                     # Due to the while loop it will remove every duplicate of food except the first one
@@ -258,7 +257,7 @@ class OrderMenu:
             else:
                 self.final_content_list.append(f"{food} x {1}")
 
-        # Formats the final contents by creating a string with each of the food from the final_content_list seperated by a new line
+        # Formats the final contents by creating a string with each of the food from the final_content_list seperated by a new line(by using the \n)
         for order in self.final_content_list:
             self.formating += order
             if self.order_num < len(self.final_content_list):
@@ -268,11 +267,11 @@ class OrderMenu:
         self.history_btn.configure(state="active")
 
     def history_setup(self):
-        """Sets up the history frame by showing the info for the first order on the list and sets up the buttons acordingly"""
+        """Set up the history frame by showing the info for the first order on the list and sets up the buttons acordingly."""
         self.final_result(0)
         self.switch_frames(1, 2)
         self.history_page_num = 1
-        self.prev_btn.configure(state="disabled") # Since the history button always shows the first order recorded prev btn should be disabled 
+        self.prev_btn.configure(state="disabled")  # Since the history button always shows the first order recorded, prev btn should be disabled
         # Checks if only 1 order has been made and if so disables the next button
         if len(self.order_list) == 1:
             self.next_btn.configure(state="disabled")
@@ -280,17 +279,18 @@ class OrderMenu:
             self.next_btn.configure(state="active")
 
     def next(self):
-        """Show the information of the next order on the list and disables next and prev buttons acordingly."""
+        """Show the information of the next order on the list and activates/disables the  next and prev buttons acordingly."""
         self.history_page_num += 1
-        # Checks if only 1 order has been made and if so disables the next button, else 
+        # Checks the page number we are on is = to the amount of orders, meaning are we on the last page and if so will disable the next button
         if self.history_page_num == len(self.order_list):
             self.next_btn.configure(state="disabled")
         self.prev_btn.configure(state="active")
         self.final_result(self.history_page_num-1)
 
     def prev(self):
-        """Show the information of the next order on the list and disables next and prev buttons acordingly."""
+        """Show the information of the next order on the list and activates/disables the next and prev buttons acordingly."""
         self.history_page_num -= 1
+        # Checks if we are on the first page an if so the prev button will be disabled
         if self.history_page_num == 1:
             self.prev_btn.configure(state="disabled")
         self.next_btn.configure(state="active")
